@@ -1,10 +1,9 @@
 import os
 
 
-def mkdir(data):
-    return os.mkdir(data)
+def mkdir(root, data):
+    return os.mkdir(root/data)
 
 
-def add(data):
-    return os.mkfifo(data)
-
+def add(root, data):
+    return os.mkfifo(root/data)

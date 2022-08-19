@@ -1,11 +1,17 @@
+import os
 import sys
+import pathlib
+from pathlib import Path
 
 from create import add, mkdir
 from delete import delete_file, delete_directory
 from list import dirlist
 
 
-base = '/home/almaz/PycharmProjects/zeon/zeon_fs/'
+root = Path(__file__).parent / 'fs'
+if not pathlib.Path(root).exists():
+    os.mkdir(root)
+
 
 commands = {
     'add': add,
@@ -29,5 +35,4 @@ _, command, *args = sys.argv
 if command not in commands:
     exit('Not in commands')
 
-commands[command](*args)
-
+commands[command](root, *args)
