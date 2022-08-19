@@ -10,6 +10,8 @@ def mkdir(root, data):
 
 
 def add(root, data):
-    if not pathlib.Path(origin_file / str(data)).exists():
+    if not pathlib.Path(origin_file / data).exists():
         exit("There is no such file")
+    if pathlib.Path(root / data).exists():
+        exit("File already exists")
     shutil.copy(origin_file/str(data), root)
