@@ -32,6 +32,7 @@ if len(sys.argv) <= 1:
 
 _, command, *args = sys.argv
 
+
 if command not in commands:
     exit('Not in commands')
 
