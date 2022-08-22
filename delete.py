@@ -1,6 +1,5 @@
 import os
 import pathlib
-# from main import base
 
 
 def delete_directory(root, location):

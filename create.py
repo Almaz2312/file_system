@@ -2,16 +2,19 @@ import os
 import pathlib
 import shutil
 
-origin_file = pathlib.Path(__file__).parent / 'origin/'
-
 
 def mkdir(root, data):
     return os.mkdir(root/data)
 
 
 def add(root, data):
-    if not pathlib.Path(origin_file / data).exists():
+    file = str(data).split('/').__getitem__(-1)
+    print(file)
+    if not pathlib.Path(data).exists():
         exit("There is no such file")
-    if pathlib.Path(root / data).exists():
+
+    if pathlib.Path(root / file).exists():
         exit("File already exists")
-    shutil.copy(origin_file/str(data), root)
+
+    shutil.copy(data, root)
+    print('File added')
