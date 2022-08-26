@@ -23,3 +23,15 @@ def add_hash(file, data):
         json.dump(loaded, f, indent=1)
 
     return loaded
+
+
+def remove_hash(dict_val, file_name):
+    fname = '/home/almaz/PycharmProjects/zeon/zeon_fs/hash_dict.json'
+    a = {file_name: dict_val}
+    with open(fname, "r") as f:
+        loaded = json.load(f)
+        loaded.remove(a)
+
+    with open(fname, "w") as f:
+        json.dump(loaded, f, indent=1)
+
