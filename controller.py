@@ -7,15 +7,18 @@ from delete import delete_file
 from list import dirlist
 
 
-root = Path(__file__).parent / 'fs'
+root = Path(__file__).parent / '.fs'
 
 if not pathlib.Path(root).exists():
     os.mkdir(root)
 
+# storage_path = root /
+
 commands = {
     'add': add,
     'delete': delete_file,
-    'list': dirlist
+    'list': dirlist,
+    # 'add_h': hash_dir
 }
 
 
