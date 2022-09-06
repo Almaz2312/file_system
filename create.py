@@ -50,15 +50,19 @@ def add(root, data):
     file_name = str(data).split('/').__getitem__(-1)
     hash_name = sha256(file_name.encode()).hexdigest()
     hash_content = sha256(Path(data).read_bytes()).hexdigest()
-
+    name_extension = file_name.split('.').__getitem__(-1)
+    print(name_extension)
     name_head, name_tail = hash_name[:4], hash_name[4:]
     content_head, content_tail = hash_content[:4], hash_content[4:]
-
     # create a path to store hashes
 
     name_db = create_dir(root, name_head) / 'name.db'
     content_db = create_dir(root, content_head) / 'meta.db'
     files_dir = create_dir(root, content_head) / 'files'
+    file_dest = files_dir / hash_content
+    if not Path(files_dir).exists():
+        Path.mkdir(files_dir)
+
 
     # add to name.db
     if name_db.exists():
@@ -110,12 +114,15 @@ def add(root, data):
             if hash_content in loaded:
                 print('File content already exists!!!')
                 loaded[hash_content]['files'].append({file_name: str(datetime.now().date())})
+
             else:
+                shutil.copy(Path(data), Path(files_dir) / 'hash_content')
                 loaded = loaded.update(content)
                 print('File content updated successfully!!!')
 
     else:
         loaded = content
+        shutil.copy(Path(data), Path(files_dir) / hash_content)
 
     with open(content_db, 'wb') as f:
         pickle.dump(loaded, f)
