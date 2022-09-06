@@ -1,14 +1,12 @@
 import pathlib
 import shutil
-import sys
 from pathlib import Path
 from datetime import datetime
 import pickle
-from hashlib import sha256
-from hash_func import create_dir
+from hash_func import create_dir, hash_func
 
 
-def open_pickle(file_path: pathlib.PosixPath):
+def open_pickle(file_path):
     if not file_path.exists():
         with open(file_path, 'wb') as f:
             loaded: dict = {}
@@ -27,9 +25,7 @@ def add(root, data):
         exit("There is no such file!!!")
 
     # Variables for better visualization and convenience in coding
-    file_name = str(data).split('/').__getitem__(-1)
-    hash_name = sha256(file_name.encode()).hexdigest()
-    hash_content = sha256(Path(data).read_bytes()).hexdigest()
+    hash_name, hash_content, file_name = hash_func(data)
     name_head, name_tail = hash_name[:4], hash_name[4:]
     content_head, content_tail = hash_content[:4], hash_content[4:]
 
@@ -37,10 +33,6 @@ def add(root, data):
     name_db = create_dir(root, name_head) / 'name.db'
     content_db = create_dir(root, content_head) / 'meta.db'
     files_dir = create_dir(root, content_head) / 'files'
-
-    # Create path to files folder, if not exists
-    if not Path(files_dir).exists():
-        Path.mkdir(files_dir)
 
     # add to name.db
     # call an open_pickle function to create if not exists and then open
@@ -82,5 +74,5 @@ def add(root, data):
     with open(content_db, 'wb') as f:
         pickle.dump(loaded_content, f)
 
-    print(f'Content information added to --> {content_db}', 'File content added successfully!!!', loaded_content, sep='\n')
-
+    print(f'Content information added to --> {content_db}\n'
+          f'File content added successfully!!!', loaded_content, sep='\n')
