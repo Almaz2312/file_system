@@ -1,3 +1,4 @@
+import pathlib
 import shutil
 import sys
 from pathlib import Path
@@ -7,125 +8,79 @@ from hashlib import sha256
 from hash_func import create_dir
 
 
-# def mkdir(root, data):
-#     return os.mkdir(root/data)
+def open_pickle(file_path: pathlib.PosixPath):
+    if not file_path.exists():
+        with open(file_path, 'wb') as f:
+            loaded: dict = {}
+            pickle.dump(loaded, f)
 
+    with open(file_path, 'rb') as f:
+        loaded = pickle.load(f)
 
-# def add(root, data):
-#     file = str(data).split('/').__getitem__(-1)
-#     print(file)
-#     file_hash_name = sha256(file).hexdigest()
-#     content_hash = sha256(Path(data).read_bytes()).hexdigest()
-#     # destination = root/full_hash_exten
-#
-#
-#     # if not pathlib.Path(data).exists():
-#     #     exit("There is no such file!!!")
-#     #
-#     # if not pathlib.Path('/home/almaz/PycharmProjects/zeon/zeon_fs/hash_tuple.data').exists():
-#     #     shutil.copy(data, destination), add_hash(file, hash_func(data))
-#     #     exit('Storage file created!!!')
-#     #
-#     # with open('/home/almaz/PycharmProjects/zeon/zeon_fs/hash_tuple.data', 'rb') as a:
-#     #
-#     #     load = pickle.load(a)
-#     #
-#     #     for item in load:
-#     #
-#     #         if item[0] == file:
-#     #             exit('File name already exists!!!')
-#     #
-#     #         if hash_func(data) == item[1]:
-#     #             add_hash(file, hash_func(data))
-#     #             exit("File content already exists!!!")
-#     #
-#     #     shutil.copy(data, destination), add_hash(file, hash_func(data))
-#
-#     add_hash(file_hash_name)
-#     add_hash(content_hash)
-#
-#     print('File added successfully!!!')
+        return loaded
+
 
 def add(root, data):
+
+    # Check if file we are adding exists
+    if not Path(data).exists():
+        exit("There is no such file!!!")
+
+    # Variables for better visualization and convenience in coding
     file_name = str(data).split('/').__getitem__(-1)
     hash_name = sha256(file_name.encode()).hexdigest()
     hash_content = sha256(Path(data).read_bytes()).hexdigest()
-    name_extension = file_name.split('.').__getitem__(-1)
-    print(name_extension)
     name_head, name_tail = hash_name[:4], hash_name[4:]
     content_head, content_tail = hash_content[:4], hash_content[4:]
-    # create a path to store hashes
 
+    # create a path to store hashes
     name_db = create_dir(root, name_head) / 'name.db'
     content_db = create_dir(root, content_head) / 'meta.db'
     files_dir = create_dir(root, content_head) / 'files'
-    file_dest = files_dir / hash_content
+
+    # Create path to files folder, if not exists
     if not Path(files_dir).exists():
         Path.mkdir(files_dir)
 
-
     # add to name.db
-    if name_db.exists():
-        with open(name_db, 'rb') as f:
-            loaded = pickle.load(f)
-            if hash_name in loaded:
-                exit('File name already exists!!!')
-        loaded.update({hash_name: file_name})
-    else:
-        loaded = {hash_name: file_name}
+    # call an open_pickle function to create if not exists and then open
+    loaded_name_db = open_pickle(name_db)
+
+    if hash_name in loaded_name_db:
+        exit('File name already exists!!!')
+
+    loaded_name_db.update({hash_name: file_name})
 
     with open(name_db, 'wb') as f:
-        pickle.dump(loaded, f)
+        pickle.dump(loaded_name_db, f)
 
-    print(f'Name added to --> {name_db}', 'File name added successfully!!!', loaded, sep='\n')
+    print(f'Name added to --> {name_db}', 'File name added successfully!!!', loaded_name_db, sep='\n')
 
-    # add to content.db
+    # Contents info that will be appended or updated
     content = {
             hash_content: {
                 'size': f'{Path(data).stat().st_size} bytes',
                 'files': [{file_name: str(datetime.now().date())}]
             }
         }
-    # size = f'{Path(data).stat().st_size} bytes'
-    # files = [{file_name: str(datetime.now().date())}]
-    #
-    # if not content_db.exists():
-    #
-    #     with open(content_db, 'wb') as f:
-    #         pickle.dump({}, f)
-    #
-    # with open(content_db, 'rb') as f:
-    #     loaded = pickle.load(f)
-    #
-    # if hash_content not in loaded:
-    #     shutil.copy(data, files_dir/hash_content)
-    #
-    # loaded[hash_content] = loaded.setdefault(hash_content, {'size': size,
-    #                                                         'files': []})
-    #
-    #
-    #
-    # loaded[hash_content]['files'].append({file_name: str(datetime.now().date())})
 
-    if content_db.exists():
-        with open(content_db, 'rb') as f:
-            loaded = pickle.load(f)
+    # add to content.db
+    # Call a function open_pickle(data) to create file if not exists, and open it
+    loaded_content = open_pickle(content_db)
 
-            if hash_content in loaded:
-                print('File content already exists!!!')
-                loaded[hash_content]['files'].append({file_name: str(datetime.now().date())})
+    # If content_hash is in a file append to part of file
+    if hash_content in loaded_content:
+        print('File content already exists!!!')
+        loaded_content[hash_content]['files'].append({file_name: str(datetime.now().date())})
 
-            else:
-                shutil.copy(Path(data), Path(files_dir) / 'hash_content')
-                loaded = loaded.update(content)
-                print('File content updated successfully!!!')
-
+    # if not copy original file and write whole content info
     else:
-        loaded = content
-        shutil.copy(Path(data), Path(files_dir) / hash_content)
+        shutil.copy(Path(data), Path(files_dir) / 'hash_content')
+        loaded_content.update(content)
+        print('File content updated successfully!!!')
 
     with open(content_db, 'wb') as f:
-        pickle.dump(loaded, f)
+        pickle.dump(loaded_content, f)
 
-    print(f'Content information added to --> {content_db}', 'File content added successfully!!!', loaded, sep='\n')
+    print(f'Content information added to --> {content_db}', 'File content added successfully!!!', loaded_content, sep='\n')
 
