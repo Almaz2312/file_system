@@ -70,7 +70,7 @@ def add_to_content_db(root, file_path):
     # if not copy original file and write hash content, size, file name and added date
     else:
 
-        shutil.copy(Path(file_path), Path(files_storage) / 'hash_content')
+        shutil.copy(Path(file_path), Path(files_storage) / f'{hash_content}')
         loaded_content_db.update(content)
         print('File content updated successfully!!!')
 
