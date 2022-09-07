@@ -2,7 +2,7 @@ import os
 import pathlib
 
 import hash_func
-from hash_func import remove_hash
+# from hash_func import remove_hash
 import pickle
 
 

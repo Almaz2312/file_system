@@ -7,7 +7,8 @@ from hash_func import hash_string, init_dir
 
 
 def open_pickle(file_path):
-    if not file_path.exists():
+
+    if not Path(file_path).exists():
         with open(file_path, 'wb') as f:
             loaded: dict = {}
             pickle.dump(loaded, f)
@@ -15,7 +16,7 @@ def open_pickle(file_path):
     with open(file_path, 'rb') as f:
         loaded = pickle.load(f)
 
-        return loaded
+    return loaded
 
 
 def pickle_dump(file_path, loaded_content):
@@ -28,10 +29,10 @@ def add_to_name_db(root, file_path):
     hash_name, _, file_name = hash_string(file_path)
 
     # Get name_db file path or create it (if not exist)
-    name_db = init_dir(root, hash_name)
+    name_db = init_dir(root, hash_name) / 'name.db'
 
     # Open file, check file(if exists), add(if not exists)
-    loaded_name_db = open_pickle(file_path)
+    loaded_name_db = open_pickle(name_db)
     if hash_name in loaded_name_db:
         exit('File name already exists!!!')
 
@@ -47,8 +48,8 @@ def add_to_content_db(root, file_path):
     _, hash_content, file_name = hash_string(file_path)
 
     # Get content_db and files storage path or create(if not exists)
-    content_db = init_dir(root, hash_content)
-    files_storage = content_db / 'files'
+    content_db = init_dir(root, hash_content) / 'meta.db'
+    files_storage = init_dir(root, hash_content) / 'files'
 
     files = {file_name: datetime.now().date()}
     content = {
