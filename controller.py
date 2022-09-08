@@ -1,30 +1,41 @@
-import pathlib
+from datetime import date
 from pathlib import Path
-import os
 
-from create import add
-from delete import delete_file
-from list import dirlist
-
-
-root = Path(__file__).parent / '.fs'
-
-if not pathlib.Path(root).exists():
-    os.mkdir(root)
-
-# storage_path = root /
-
-commands = {
-    'add': add,
-    'delete': delete_file,
-    'list': dirlist,
-    # 'add_h': hash_dir
-}
+from fs_db import check_name, check_content
+from fs_utils import get_filename, copy_file, add_content_hash, get_names_db_path, get_content_db_path, open_pickle, \
+    pickle_dump, dict_filename_date
+from hash_func import hash_string, hash_file
 
 
-def controller(command, *args):
+def add(args):
+    # check args
+    if not args:
+        print('Need arguments!!!')
+        exit()
 
-    if command not in commands:
-        exit('Not in commands')
+    # check path
+    source_file_path = args[0]
+    if not Path(source_file_path).exists():
+        print('Path does not exists!!!')
+        exit()
 
-    commands[command](root, *args)  # type: ignore
+    filename = get_filename(source_file_path)
+    if check_name(filename):
+        print('Filename already exists!')
+        exit()
+
+    added_name = {hash_string(filename): filename}
+    names = open_pickle(get_names_db_path(filename))
+    names.update(added_name)
+
+    if check_content(source_file_path):
+        contents = open_pickle(get_content_db_path(source_file_path))
+        contents[hash_file(source_file_path)]['files'].append(dict_filename_date(filename))
+
+    else:
+        copy_file(source_file_path)
+        contents = add_content_hash(source_file_path)
+
+    pickle_dump(contents, get_content_db_path(source_file_path))
+    pickle_dump(names, get_names_db_path(filename))
+    print(contents, names, sep='\n')
