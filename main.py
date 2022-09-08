@@ -1,4 +1,5 @@
-from controller import add
+from create import add
+from delete import delete_file
 import sys
 
 """                                             
@@ -8,7 +9,8 @@ python3 main.py delete test.txt
 """
 
 commands = {
-    'add': add
+    'add': add,
+    'delete': delete_file
 }
 
 if __name__ == '__main__':

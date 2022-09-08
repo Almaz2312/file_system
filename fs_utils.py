@@ -46,8 +46,15 @@ def create_path(file_path):
     return file_path
 
 
-def get_content_db_path(path):
+def get_meta_db_path(path):
     content_hash = hash_file(path)
+    hash_prefix = get_hash_head(content_hash)
+    content_path = root + hash_prefix + '/meta.db'
+
+    return content_path
+
+
+def get_metadb_path_from_hash(content_hash):
     hash_prefix = get_hash_head(content_hash)
     content_path = root + hash_prefix + '/meta.db'
 
@@ -81,14 +88,15 @@ def add_content_hash(path):
         hash_file(path):
             {
                 'size': Path(path).stat().st_size,
-                'files': [
-                    {get_filename(path): str(date.today())}
-                ]
+                'files': {get_filename(path): str(date.today())}
             }
     }
-    print(path)
+
     return content
 
 
 def dict_filename_date(filename):
     return {filename: str(date.today())}
+
+
+# def delete_name_from_meta(file_name):
