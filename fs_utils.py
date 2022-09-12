@@ -1,7 +1,6 @@
 import shutil
 from datetime import date
 from pathlib import Path
-from hashlib import sha256
 import pickle
 
 from hash_func import hash_string, hash_file
@@ -99,4 +98,7 @@ def dict_filename_date(filename):
     return {filename: str(date.today())}
 
 
-# def delete_name_from_meta(file_name):
+def del_original_file(hash_content):
+    prefix = get_hash_head(hash_content)
+    path = root + prefix + '/files' + '/' + hash_content
+    Path(path).unlink()

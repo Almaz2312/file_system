@@ -1,7 +1,8 @@
 from hashlib import sha256
 from pathlib import Path
 
-from fs_utils import create_path, get_hash_head, open_pickle, get_meta_db_path, get_storage_path
+from fs_utils import create_path, get_hash_head, open_pickle, get_meta_db_path, get_storage_path, \
+    get_metadb_path_from_hash
 from hash_func import hash_string
 
 root = '/home/almaz/PycharmProjects/zeon/zeon_fs/.fs'
@@ -18,22 +19,20 @@ def check_name(name):
         create_path(path)
 
     names = open_pickle(path + '/names.db')
-    if hash_name not in names:
-        return False
-
-    return True
+    return hash_name in names
 
 
 def check_content(path):
     hash_content = sha256(Path(path).read_bytes()).hexdigest()
     file_path = get_storage_path(path)
-    content_path = get_meta_db_path(path)
 
     if not Path(file_path).exists():
         create_path(file_path)
 
+    content_path = get_meta_db_path(path)
     contents = open_pickle(content_path)
-    if hash_content not in contents:
-        return False
+    return hash_content in contents
 
-    return True
+
+def check_file_in_meta_db(contents, content):
+    return bool(contents[content]['files'])
