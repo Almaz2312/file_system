@@ -1,8 +1,7 @@
 from hashlib import sha256
 from pathlib import Path
 
-from fs_utils import create_path, get_hash_head, open_pickle, get_meta_db_path, get_storage_path, \
-    get_metadb_path_from_hash
+from fs_utils import create_path, get_hash_head, open_pickle, get_meta_db_path, get_storage_path
 from hash_func import hash_string
 
 root = '/home/almaz/PycharmProjects/zeon/zeon_fs/.fs'

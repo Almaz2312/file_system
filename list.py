@@ -1,14 +1,21 @@
 from pathlib import Path
-import pickle
+
+from fs_utils import open_trie_pickle, get_size_from_meta
 
 
 def dirlist(*args):
 
-    _ = args
+    arg = args[0]
 
-    files = Path(__file__).parent / 'hash_tuple.data'
-    with open(files, 'rb') as files:
-        loaded = pickle.load(files)
+    trie = open_trie_pickle()
+    searching = trie.search(*arg)
 
-    for file in loaded:
-        print(file[0], file[1], sep='\t')
+    if not searching:
+        print('No such file!!!')
+        exit()
+
+    for filename in searching:
+        size = get_size_from_meta(filename)
+        print(filename, f'size is: {size}')
+
+    print(f'Quantity of files is: {len(searching)}')

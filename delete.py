@@ -1,7 +1,6 @@
-from pathlib import Path
-
 from fs_db import check_name, check_file_in_meta_db
-from fs_utils import open_pickle, get_names_db_path, get_metadb_path_from_hash, pickle_dump, del_original_file
+from fs_utils import open_pickle, get_names_db_path, get_metadb_path_from_hash, pickle_dump, del_original_file, \
+    delete_filename_from_trie
 from hash_func import hash_string
 
 
@@ -28,5 +27,5 @@ def delete_file(args):
 
     pickle_dump(names, get_names_db_path(file_name))
     pickle_dump(contents, get_metadb_path_from_hash(content))
-
+    delete_filename_from_trie(file_name)
     print(names, contents, "File has been deleted successfully!!!", sep='\n')
