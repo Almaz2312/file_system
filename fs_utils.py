@@ -141,3 +141,4 @@ def delete_filename_from_trie(filename):
     trie = open_trie_pickle()
     trie.remove(filename)
     pickle_dump(trie, filename_trie_path)
+

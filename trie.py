@@ -25,14 +25,13 @@ class TrieNode:
             trie = self
             for s in names[:-1]:
                 trie = trie._children[s]
-            # print(trie._children[names[-1]])
+
+            node_child = trie._children[names[-1]]
             if len(names) > 1:
-                if not trie._children[names[-1]]._children and not trie._children[names[-1]]._end:
+                if not node_child._children and not node_child._end:
                     if len(trie._children) == 1:
-                        print(trie._children)
                         trie._children = defaultdict(TrieNode)
-                        print('Not trie!!!')
-                        print(trie._children)
+
             if names:
                 print(names)
 

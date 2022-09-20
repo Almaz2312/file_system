@@ -3,7 +3,7 @@ from pathlib import Path
 from fs_utils import open_trie_pickle, get_size_from_meta
 
 
-def dirlist(*args):
+def search(*args):
 
     arg = args[0]
 
@@ -19,3 +19,8 @@ def dirlist(*args):
         print(filename, f'size is: {size}')
 
     print(f'Quantity of files is: {len(searching)}')
+
+
+def dirlist(args):
+    dirs = args.split('/')
+
