@@ -15,12 +15,24 @@ def search(*args):
         exit()
 
     for filename in searching:
-        size = get_size_from_meta(filename)
-        print(filename, f'size is: {size}')
+        # size = get_size_from_meta(filename)
+        print(filename)
 
-    print(f'Quantity of files is: {len(searching)}')
+    print('All possible directory paths')
 
 
 def dirlist(args):
-    dirs = args.split('/')
 
+    #check args
+    if not args:
+        args = '/'
+
+    arg = args[0]
+
+    trie = open_trie_pickle()
+    listing = trie.list(arg)
+
+    for paths in listing:
+        print(paths)
+
+    print(f'Quantity of files is: {len(listing)}')

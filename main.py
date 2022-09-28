@@ -6,7 +6,12 @@ from list import dirlist, search
 
 """                                             
 python3 main.py add test.txt                    
-python3 main.py list                            
+python3 main.py list path/path
+
+python3 main.py search ('*', ?, or path)
+    in search * stands for all possible paths not limited by quantity
+    in search ? stands for one path                    
+            
 python3 main.py delete test.txt                 
 """
 

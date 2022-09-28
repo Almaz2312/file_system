@@ -9,7 +9,7 @@ def delete_file(args):
     if not args:
         print('Need more arguments!!!')
         exit()
-
+    print(args[0])
     file_name = args[0]
     if not check_name(file_name):
         print('There is no such file!!!')

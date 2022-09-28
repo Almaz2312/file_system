@@ -14,11 +14,12 @@ def add(args):
 
     # check path
     source_file_path = args[0]
+    directory = args[1]
     if not Path(source_file_path).exists():
         print('Path does not exists!!!')
         exit()
 
-    filename = get_filename(source_file_path)
+    filename = get_filename(source_file_path, directory)
     if check_name(filename):
         print('Filename already exists!')
         exit()
@@ -33,10 +34,10 @@ def add(args):
 
     else:
         copy_file(source_file_path)
-        contents = add_content_hash(source_file_path)
+        contents = add_content_hash(source_file_path, filename)
 
     pickle_dump(contents, get_meta_db_path(source_file_path))
     pickle_dump(hash_names, get_names_db_path(filename))
-    add_filename_to_trie(filename)
+    add_filename_to_trie(source_file_path, directory)
 
     print(contents, hash_names, sep='\n')

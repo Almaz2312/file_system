@@ -4,10 +4,8 @@ from pathlib import Path
 import pickle
 
 from hash_func import hash_string, hash_file
-from trie import TrieNode
-
-root = '/home/almaz/PycharmProjects/zeon/zeon_fs/.fs'
-filename_trie_path = Path(root + '/filenames.data')
+from trie import ListTrieNode
+from config import root, list_trie_path
 
 
 def create_pickle(data, file_path):
@@ -17,7 +15,7 @@ def create_pickle(data, file_path):
 
 # pickle_util functions
 def open_pickle(file_path):
-
+    print(file_path)
     if not Path(file_path).exists():
         create_pickle(dict(), Path(file_path))
 
@@ -28,10 +26,10 @@ def open_pickle(file_path):
 
 
 def open_trie_pickle():
-    if not filename_trie_path.exists():
-        create_pickle(TrieNode(), filename_trie_path)
+    if not list_trie_path.exists():
+        create_pickle(ListTrieNode(), list_trie_path)
 
-    with open(filename_trie_path, 'rb') as file:
+    with open(list_trie_path, 'rb') as file:
         loaded = pickle.load(file)
 
     return loaded
@@ -43,8 +41,9 @@ def pickle_dump(loaded_content, file_path):
 
 
 # getting name and hash prefix
-def get_filename(path):
-    return path.split('/')[-1]
+def get_filename(source_path, dest_path):
+    filename = source_path.split('/')[-1]
+    return dest_path + '/' + filename
 
 
 def get_hash_head(head):
@@ -79,7 +78,7 @@ def get_names_db_path(name):
     name_hash = hash_string(name)
     hash_prefix = get_hash_head(name_hash)
     name_path = root + hash_prefix + '/names.db'
-
+    # print(name_path)
     return name_path
 
 
@@ -108,12 +107,12 @@ def copy_file(source_file_path):
     shutil.copy(source_file_path, get_storage_path(source_file_path) + f'/{hash_file(source_file_path)}')
 
 
-def add_content_hash(path):
+def add_content_hash(path, filename):
     content = {
         hash_file(path):
             {
                 'size': Path(path).stat().st_size,
-                'files': {get_filename(path): str(date.today())}
+                'files': {filename: str(date.today())}
             }
     }
 
@@ -130,15 +129,15 @@ def del_original_file(hash_content):
     Path(path).unlink()
 
 
-def add_filename_to_trie(filename):
+def add_filename_to_trie(filename, path_to):
 
     filenames_trie = open_trie_pickle()
-    filenames_trie.add(filename)
-    pickle_dump(filenames_trie, filename_trie_path)
+    filenames_trie.add(filename, path_to)
+    pickle_dump(filenames_trie, list_trie_path)
 
 
 def delete_filename_from_trie(filename):
     trie = open_trie_pickle()
     trie.remove(filename)
-    pickle_dump(trie, filename_trie_path)
+    pickle_dump(trie, list_trie_path)
 
