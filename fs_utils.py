@@ -15,7 +15,6 @@ def create_pickle(data, file_path):
 
 # pickle_util functions
 def open_pickle(file_path):
-    print(file_path)
     if not Path(file_path).exists():
         create_pickle(dict(), Path(file_path))
 
@@ -78,7 +77,7 @@ def get_names_db_path(name):
     name_hash = hash_string(name)
     hash_prefix = get_hash_head(name_hash)
     name_path = root + hash_prefix + '/names.db'
-    # print(name_path)
+
     return name_path
 
 

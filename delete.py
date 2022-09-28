@@ -9,7 +9,7 @@ def delete_file(args):
     if not args:
         print('Need more arguments!!!')
         exit()
-    print(args[0])
+
     file_name = args[0]
     if not check_name(file_name):
         print('There is no such file!!!')
@@ -28,4 +28,5 @@ def delete_file(args):
     pickle_dump(names, get_names_db_path(file_name))
     pickle_dump(contents, get_metadb_path_from_hash(content))
     delete_filename_from_trie(file_name)
+
     print(names, contents, "File has been deleted successfully!!!", sep='\n')

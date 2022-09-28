@@ -29,16 +29,13 @@ class ListTrieNode:
                 results.append(k)
 
         def _list(m, node, i):
-            # if m == '':
-            #     pass
-            # else:
             element.append(m)
 
             if i == len(term):
                 for i, k in node._children.items():
                     element.append(i)
-
-                    results.append('/'.join(element))
+                    filtered = filter(lambda x: x, element)
+                    results.append('/'.join(filtered))
                     element.pop()
 
             elif term[i] in node._children:
@@ -53,11 +50,11 @@ class ListTrieNode:
         element = []
 
         def _search(m, node, i):
-
             element.append(m)
 
             if i == len(term):
-                result.append('/'.join(element))
+                filtered = filter(lambda x: x, element)
+                result.append('/'.join(filtered))
 
             elif term[i] == '?':
                 for k, child in node._children.items():

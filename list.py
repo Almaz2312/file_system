@@ -15,7 +15,6 @@ def search(*args):
         exit()
 
     for filename in searching:
-        # size = get_size_from_meta(filename)
         print(filename)
 
     print('All possible directory paths')
@@ -31,7 +30,6 @@ def dirlist(args):
 
     trie = open_trie_pickle()
     listing = trie.list(arg)
-
     for paths in listing:
         print(paths)
 
